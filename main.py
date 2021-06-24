@@ -24,12 +24,15 @@ def mapdraw():
 
 pimg = playerimg
 
-FPS = 2
+FPS = 7
 fpsClock = pygame.time.Clock()
 
 running = True
+counter = 0
 
 while running:
+    if counter>0:
+        counter -= 1
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -40,7 +43,7 @@ while running:
     grass_rect = pygame.Rect(352, 256, 448, 128)
 
 
-    if event.type == pygame.KEYDOWN:
+    if event.type == pygame.KEYDOWN and counter == 0:
         if event.key == pygame.K_RIGHT:
             if (playerY > -33 and playerY < 97 and playerX == 256) or (playerY > 383 and playerY < 513 and playerX == 288) or playerX == 768:
                 playerX += 0
@@ -75,10 +78,12 @@ while running:
 
     t2 = (playerX,playerY)
 
+    if t1 != t2:
+        counter = 10
+
     if player_rect.colliderect(grass_rect) and random.randint(1,11) == 1 and t1 != t2:
         screen.blit(whitescreen, (0, 0))
     else:
-
         screen.fill((0,0,0))
 
         print("X = ", playerX)
@@ -89,4 +94,4 @@ while running:
         playerdisp(pimg,playerX,playerY)
 
     pygame.display.update()
-    fpsClock.tick(FPS)
+    #fpsClock.tick(FPS)
