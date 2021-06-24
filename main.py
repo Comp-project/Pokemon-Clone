@@ -1,4 +1,5 @@
 import pygame
+import random
 
 pygame.init()
 
@@ -7,6 +8,7 @@ playerimgB = pygame.image.load('pokespriteB.png')
 playerimgL = pygame.image.load('pokespriteL.png')
 playerimgR = pygame.image.load('pokespriteR.png')
 map = pygame.image.load('map.png')
+whitescreen = pygame.image.load('whitescreen.png')
 
 playerX = 32
 playerY = 352
@@ -32,7 +34,11 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    pygame.key.get_pressed()
+    t1 = (playerX,playerY)
+
+    player_rect = pygame.Rect(playerX, playerY, playerimgR.get_width(), playerimgR.get_height())
+    grass_rect = pygame.Rect(352, 256, 448, 128)
+
 
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_RIGHT:
@@ -67,16 +73,20 @@ while running:
         playerY+=0
         playerX+=0
 
-    screen.fill((0,0,0))
+    t2 = (playerX,playerY)
 
-    print("X = ", playerX)
-    print("Y = ", playerY)
+    if player_rect.colliderect(grass_rect) and random.randint(1,11) == 1 and t1 != t2:
+        screen.blit(whitescreen, (0, 0))
+    else:
 
-    mapdraw()
+        screen.fill((0,0,0))
 
-    playerdisp(pimg,playerX,playerY)
+        print("X = ", playerX)
+        print("Y = ", playerY)
+
+        mapdraw()
+
+        playerdisp(pimg,playerX,playerY)
 
     pygame.display.update()
     fpsClock.tick(FPS)
-
-#Not yet worked on creating boundaries for the image and the buildings, ponds etc. Will do that tom.
