@@ -59,17 +59,20 @@ while running:
                 pimg = playerimgL
 
         elif event.key == pygame.K_UP:
-            if (playerX > -1 and playerX < 129 and playerY == 256) or (playerX > 287 and playerX < 769 and playerY == 128) or playerY == -32:                playerY += 0
+            if (playerX > -1 and playerX < 129 and playerY == 256) or (playerX > 287 and playerX < 769 and playerY == 128) or playerY == -32 or (playerX > 319 and playerX <609 and playerY == 544 ):
+                playerY += 0
             else:
                 playerY -= 32
                 pimg = playerimgB
 
         elif event.key == pygame.K_DOWN:
-            if (playerX > 319 and playerX < 609 and playerY == 352) or (playerX > -33 and playerX < 129 and playerY == 352) or playerY == 544:
+            if (playerX > 319 and playerX < 609 and playerY == 352) or (playerX > -33 and playerX < 129 and playerY == 352) or playerY == 544 or (playerX > 63 and playerX < 129 and playerY == 64):
                 playerY += 0
             else:
                 playerY += 32
                 pimg = playerimg
+
+        grasscv = random.randint(1, 11)
 
 
     if event.type == pygame.KEYUP:
@@ -79,9 +82,9 @@ while running:
     t2 = (playerX,playerY)
 
     if t1 != t2:
-        counter = 10
+        counter = 12
 
-    if player_rect.colliderect(grass_rect) and random.randint(1,11) == 1 and t1 != t2:
+    if player_rect.colliderect(grass_rect) and grasscv == 1 and t1 != t2:
         screen.blit(whitescreen, (0, 0))
     else:
         screen.fill((0,0,0))
