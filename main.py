@@ -24,8 +24,8 @@ def mapdraw():
 
 pimg = playerimg
 
-FPS = 7
-fpsClock = pygame.time.Clock()
+#FPS = 7
+#fpsClock = pygame.time.Clock()
 
 running = True
 counter = 0
@@ -40,7 +40,7 @@ while running:
     t1 = (playerX,playerY)
 
     player_rect = pygame.Rect(playerX, playerY, playerimgR.get_width(), playerimgR.get_height())
-    grass_rect = pygame.Rect(352, 256, 448, 128)
+    grass_rect = pygame.Rect(352, 224, 448, 300)
 
 
     if event.type == pygame.KEYDOWN and counter == 0:
