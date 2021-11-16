@@ -1,6 +1,8 @@
 import pygame
 import random
 import Inventory
+import LoadingScreen
+import startchoosepokemon
 
 pygame.init()
 
@@ -41,15 +43,23 @@ bsbanner = pygame.image.load('Images/BattleScreenBanner.png')
 bsbanner1 = pygame.image.load('Images/BattleScreenBanner1.png')
 bsbanner2 = pygame.image.load('Images/BattleScreenBanner2.png')
 #says catch - c, run away - r, the pokemon ran away, you captured the pokemon etc.
+
 map = pygame.image.load('Images/map.png')
 whitescreen = pygame.image.load('Images/whitescreen.png')
 invimg = pygame.image.load('Images/Inventory.png')
+lscreen = pygame.image.load('Images/LoadingScreen.png')
+
+startchoose = pygame.image.load("Images/startchoose.png")
 
 #all the images
 
 playerX = 32
 playerY = 352
 xchange = 0
+loadingscreenvar = 0
+
+starterp = 0
+
 
 #inital position coordinates
 
@@ -63,79 +73,88 @@ def mapdraw():
 
 pimg = playerimgf
 
-
 running = True
 counter = 0
 
 while running:
+
+    if loadingscreenvar == 0:
+        LoadingScreen.blitls(lscreen, screen, 'PRESS ANY KEY')
+        loadingscreenvar = 1
+
+    if starterp == 0:
+        startchoosepokemon.blitcs(screen, startchoose, pokemonID, pokedict,playerinventory)
+        starterp = 1
+
     if counter>0:
         counter -= 1
     #reducing counter. refer line 121
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_i:
-                Inventory.showinv(screen, invimg, playerinventory, pokedict, charsp, sqsp, bulbsp, pikasp)
-
-    t1 = (playerX,playerY)
+    t1 = (playerX, playerY)
 
     player_rect = pygame.Rect(playerX, playerY, playerimgf.get_width(), playerimgf.get_height())
     grass_rect = pygame.Rect(352, 224, 448, 300)
 
+    for event in pygame.event.get():
 
-    if event.type == pygame.KEYDOWN and counter == 0:
-        if event.key == pygame.K_RIGHT:
-            if (playerY > -33 and playerY < 97 and playerX == 256) or (playerY > 383 and playerY < 513 and playerX == 288) or playerX == 768:
-                playerX += 0
-            else:
-                playerX += 32
-                keypressvar = "r"
+        if event.type == pygame.QUIT:
+            running = False
 
-                #keypressvar to choose which image to display. refer line 122
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_i:
+                Inventory.showinv(screen, invimg, playerinventory, pokedict, charsp, sqsp, bulbsp, pikasp)
 
-                pimg = playerimgr
+        if event.type == pygame.KEYDOWN and counter == 0:
+            if event.key == pygame.K_RIGHT:
+                if (playerY > -33 and playerY < 97 and playerX == 256) or (playerY > 383 and playerY < 513 and playerX == 288) or playerX == 768:
+                    playerX += 0
+                else:
+                    playerX += 32
+                    keypressvar = "r"
 
-            #pimg is the image it will display when the character is not moving. so i default it to the idle image at the end of the section for the particular key i have pressed
+                    #keypressvar to choose which image to display. refer line 122
 
+                    pimg = playerimgr
 
-        elif event.key == pygame.K_LEFT:
-            if (playerY > -33 and playerY < 65 and playerX == 96) or (playerY > 95 and playerY < 225 and playerX ==160) or (playerY > 383 and playerY < 513 and playerX == 640) or (playerY > 383 and playerY < 545 and playerX == 160) or playerX == -32:
-                playerX += 0
-            else:
-                playerX -= 32
-                keypressvar = "l"
-
-                pimg = playerimgl
-
-        elif event.key == pygame.K_UP:
-            if (playerX > -1 and playerX < 129 and playerY == 256) or (playerX > 287 and playerX < 769 and playerY == 128) or playerY == -32 or (playerX > 319 and playerX <609 and playerY == 544 ):
-                playerY += 0
-            else:
-                playerY -= 32
-                keypressvar = "u"
-
-                pimg = playerimgb
+                #pimg is the image it will display when the character is not moving. so i default it to the idle image at the end of the section for the particular key i have pressed
 
 
-        elif event.key == pygame.K_DOWN:
-            if (playerX > 319 and playerX < 609 and playerY == 352) or (playerX > -33 and playerX < 129 and playerY == 352) or playerY == 544 or (playerX > 63 and playerX < 129 and playerY == 64):
-                playerY += 0
-            else:
-                playerY += 32
-                keypressvar = "d"
+            elif event.key == pygame.K_LEFT:
+                if (playerY > -33 and playerY < 65 and playerX == 96) or (playerY > 95 and playerY < 225 and playerX ==160) or (playerY > 383 and playerY < 513 and playerX == 640) or (playerY > 383 and playerY < 545 and playerX == 160) or playerX == -32:
+                    playerX += 0
+                else:
+                    playerX -= 32
+                    keypressvar = "l"
 
-                pimg = playerimgf
+                    pimg = playerimgl
 
-        grasscv = random.randint(1, 10)
+            elif event.key == pygame.K_UP:
+                if (playerX > -1 and playerX < 129 and playerY == 256) or (playerX > 287 and playerX < 769 and playerY == 128) or playerY == -32 or (playerX > 319 and playerX <609 and playerY == 544 ):
+                    playerY += 0
+                else:
+                    playerY -= 32
+                    keypressvar = "u"
+
+                    pimg = playerimgb
+
+
+            elif event.key == pygame.K_DOWN:
+                if (playerX > 319 and playerX < 609 and playerY == 352) or (playerX > -33 and playerX < 129 and playerY == 352) or playerY == 544 or (playerX > 63 and playerX < 129 and playerY == 64):
+                    playerY += 0
+                else:
+                    playerY += 32
+                    keypressvar = "d"
+
+                    pimg = playerimgf
+
+            grasscv = random.randint(1, 10)
 
         #grass collision variable with a 10% chance of pokemon appearance being triggered
 
 
-    if event.type == pygame.KEYUP:
-        playerY+=0
-        playerX+=0
+        if event.type == pygame.KEYUP:
+            playerY+=0
+            playerX+=0
 
     t2 = (playerX,playerY)
 
@@ -270,8 +289,6 @@ while running:
         playerdisp(pimg,playerX,playerY)
 
                 #Inventory.showinv(screen, invimg, playerinventory, pokedict, charsp, sqsp, bulbsp, pikasp)
-
-
 
 #the above is for when the counter is 0
 
