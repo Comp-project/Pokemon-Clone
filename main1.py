@@ -84,7 +84,11 @@ while running:
 
     if starterp == 0:
         startchoosepokemon.blitcs(screen, startchoose, pokemonID, pokedict,playerinventory)
+        pokemonID = 1
         starterp = 1
+
+    print(playerinventory)
+    print(pokemonID)
 
     if counter>0:
         counter -= 1
