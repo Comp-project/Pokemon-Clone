@@ -12,16 +12,20 @@ pikaimg = pygame.image.load('Images/pikaimg.png')
 hpbars = pygame.image.load('Images/healthbars.png')
 greenbars = pygame.image.load('Images/greenbar.png')
 arrow = pygame.image.load('Images/arrowcursor.png')
+#all the images added above
 
 greenbar2 = greenbars.copy()
+#duplicating health bar - one for player's health, the other for opponent
 
 fightstate = 1
+#a fight state variable - will be 1 when the fight is going on, will be 2 if player wins, will be 3 if opponent wins ( will tell more about this tomorrow)
 
 running = True
 
 screen = pygame.display.set_mode((800,600))
 
 arrowcoordinatex, arrowcoordinatey = 40,520
+#coordinates of the arrow cursor to navigate between options)
 
 while running:
     screen.blit(bsc, (0,0))
@@ -44,7 +48,6 @@ while running:
     screen.blit(text4,(34,69))
     screen.blit(text5, (466, 372))
 
-
     if fightstate == 1:
         text1 = font.render('FIGHT', True, (0,0,0))
         text2 = font.render('HEAL', True, (0,0,0))
@@ -63,6 +66,8 @@ while running:
                     else:
                         screen.blit(arrow, (40,arrowcoordinatey))
                         arrowcoordinatex = 40
+                        
+        #above code is for controlling the cursor arrow
 
 
     pygame.display.update()
