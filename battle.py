@@ -102,7 +102,7 @@ while running:
     elif playerhealth == 0:
         while True:
             screen.blit(bsc, (0, 0))
-            screen.blit(pbimg, (75, 275))
+            screen.blit(pikaimg, (450, 60))
             screen.blit(pbsc, (0, 450))
             screen.blit(hpbars, (0, 0))
             screen.blit(greenbars, (165, 115))
