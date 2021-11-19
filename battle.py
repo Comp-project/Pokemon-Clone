@@ -54,6 +54,9 @@ def pcheal():
     pchealth += 20 + (random.random()*10)//1
     if pchealth >= 100:
         pchealth = 100
+        
+#functions we made yesterday in school
+
 arrowcoordinatex, arrowcoordinatey = 40,520
 #coordinates of the arrow cursor to navigate between options)
 
@@ -62,7 +65,9 @@ while running:
     bannertextvar = True
 
     temppch, tempplh, playerdamagedealt, pcdamagedealt, playerheal, pchealed = 0,0,0,0,0,0
-
+    
+    #health variables used to calculate stuff like damage dealt or healed by player and opponent per round
+    
     screen.blit(bsc, (0,0))
 
     screen.blit(pikaimg, (450, 60))
@@ -80,6 +85,8 @@ while running:
 
     ph1 = playerhealth
     pch1 = pchealth
+    
+    #below code is for showing stuff like pokemon fainted after HP of one pokemon reaches 0
     if pchealth == 0:
         while True:
             screen.blit(bsc, (0,0))
@@ -91,6 +98,7 @@ while running:
             text8 = font2.render('The wild Pikachu fainted!', True, (0,0,0))
             screen.blit(text8, (40,505))
             pygame.display.update()
+            
     elif playerhealth == 0:
         while True:
             screen.blit(bsc, (0, 0))
@@ -121,6 +129,8 @@ while running:
 
         if event1.type == pygame.KEYDOWN:
             if event1.key == pygame.K_RIGHT:
+                
+                #code for controlling the cursor
 
                     if arrowcoordinatex != 640:
                         screen.blit(arrow, (arrowcoordinatex + 300,arrowcoordinatey))
@@ -132,18 +142,25 @@ while running:
             if event1.key == pygame.K_a:
 
                 if arrowcoordinatex == 40:
+
+                    #the following will execute if the cursor is in the first position, ie the x coordinate is 40
+                    
                     pattack()
 
                     playerdamagedealt = str(pch1-pchealth)
                     temppch = pchealth
 
                     pcmovedetermine = random.random()
+                    
+                    #pcmovedetermine is a random.random function to determine whether the pc will heal or attack
 
                     if pcmovedetermine > 0.5:
 
                         pcattack()
 
                         pcdamagedealt = str(ph1 - playerhealth)
+                        
+                        #pcdamagedealt, pcdamagehealed, playerdamagedealt, playerdamagehealed, temppch, tempplh are all variables for calculating how much damage has been dealt or healed per round 
 
                     else:
                         pcheal()
@@ -175,9 +192,11 @@ while running:
             print('player', playerhealth)
             print('opponent', pchealth)
 
-
+    #the below line is to only show damage dealt or healed per round if a move has taken place. ie it will not display shit like 0 health healed and 0 damage dealth
+    
     if temppch != 0 or tempplh != 0:
         screen.blit(pbsc, (0,450))
+        
 
         if tempplh == 0:
             text6 = 'You dealt {} HP worth of damage.'.format(playerdamagedealt)
@@ -210,6 +229,8 @@ while running:
             if not bannertextvar:
                 break
 
+    #below lines of code is to blit the HP and healthbars
+    
     playerhpprint = font2.render('{}/100'.format(str(playerhealth)), True, (0,0,0))
     pchpprint = font2.render('{}/100'.format(str(pchealth)), True, (0,0,0))
     screen.blit(playerhpprint, (610,440))
