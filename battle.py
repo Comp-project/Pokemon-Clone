@@ -1,63 +1,21 @@
 import pygame
 import random
-import Inventory
-import LoadingScreen
-import startchoosepokemon
 import pickle
-import os
 
 pygame.init()
-
-playerinventory = []
-pokedict = {}
-pokemonID = 0
-
-#variable for storing the IDs of the captured pokemon
-
-'''pygame.mixer.music.load("Littleroot Town - Pokémon Omega Ruby & Alpha Sapphire Music Extended HD.wav")
-pygame.mixer.music.play(-1)'''
-
-playerimgf = pygame.image.load('Images/walk front idle.png')
-playerimgf1 = pygame.image.load('Images/walk front 1.png')
-playerimgf2 = pygame.image.load('Images/walk front 2.png')
-playerimgl = pygame.image.load('Images/walk left idle.png')
-playerimgl1 = pygame.image.load('Images/walk left 1.png')
-playerimgl2 = pygame.image.load('Images/walkleft 2.png')
-playerimgr = pygame.image.load('Images/R0.png')
-playerimgr1 = pygame.image.load('Images/R1.png')
-playerimgr2 = pygame.image.load('Images/R2.png')
-playerimgb = pygame.image.load('Images/walk back idle.png')
-playerimgb1 = pygame.image.load('Images/walk back 1.png')
-playerimgb2 = pygame.image.load('Images/walk back 2.png')
-
-batsc = pygame.image.load('Images/BattleScreen.png')
-bulbimg = pygame.image.load('Images/bulbimg.png')
-bulbsp = pygame.image.load('Images/bulbsp.png')
-pikaimg = pygame.image.load('Images/pikaimg.png')
-pikasp = pygame.image.load('Images/pikasp.png')
-charsp = pygame.image.load('Images/charsp.png')
-charimg = pygame.image.load('Images/Charimg.png')
-sqimg = pygame.image.load('Images/sqimg.png')
-sqsp = pygame.image.load('Images/sqsp.png')
-trback = pygame.image.load('Images/trback.png')
-
-#image of character in battle screen
-
-bsbanner = pygame.image.load('Images/BattleScreenBanner.png')
-bsbanner1 = pygame.image.load('Images/BattleScreenBanner1.png')
-bsbanner2 = pygame.image.load('Images/BattleScreenBanner2.png')
-#says catch - c, run away - r, the pokemon ran away, you captured the pokemon etc.
-
-map = pygame.image.load('Images/map.png')
-whitescreen = pygame.image.load('Images/whitescreen.png')
-invimg = pygame.image.load('Images/Inventory.png')
-lscreen = pygame.image.load('Images/LoadingScreen.png')
-startchoose = pygame.image.load("Images/startchoose.png")
 
 bbimg = pygame.image.load('Images/bulback.png')
 sbimg = pygame.image.load('Images/sqback.png')
 cbimg = pygame.image.load('Images/charback.png')
 pbimg = pygame.image.load('Images/pikaback.png')
+bsc = pygame.image.load('Images/BattleScreen.png')
+pbsc = pygame.image.load('Images/plainbsb.png')
+trback = pygame.image.load('Images/trback.png')
+
+pikaimg = pygame.image.load('Images/pikaimg.png')
+bulbimg = pygame.image.load('Images/bulbimg.png')
+charimg = pygame.image.load('Images/Charimg.png')
+sqimg = pygame.image.load('Images/sqimg.png')
 
 hpbars = pygame.image.load('Images/healthbars.png')
 greenbars = pygame.image.load('Images/greenbar.png')
@@ -65,255 +23,349 @@ arrow = pygame.image.load('Images/arrowcursor.png')
 # all the images added above
 
 greenbar2 = pygame.image.load('Images/greenbar.png')
+
+opponentchoose = pygame.image.load('Images/opponentchoose.png')
+pokemonchoose = pygame.image.load('Images/pokemonchoose.png')
 # duplicating health bar - one for player's health, the other for opponent
 
-#all the images
+fightstate = 1
+# a fight state variable - will be 1 when the fight is going on, will be 2 if player wins, will be 3 if opponent wins ( will tell more about this tomorrow)
+greenbarlength = 168
+running = True
 
-playerX = 32
-playerY = 352
-xchange = 0
-loadingscreenvar = 0
+playerhealth = 100
+pchealth = 100
 
-starterp = 0
+screen = pygame.display.set_mode((800, 600))
 
 
-#inital position coordinates
+def pattack():
+    global pchealth
+    pchealth += -20 - (random.random() * 10) // 1
+    if pchealth <= 0:
+        pchealth = 0
 
-screen = pygame.display.set_mode((800,600))
 
-def playerdisp(playerimg,playerX,playerY):
-    screen.blit(playerimg, (playerX,playerY))
+def pheal():
+    global playerhealth
+    playerhealth += 20 + (random.random() * 10) // 1
+    if playerhealth >= 100:
+        playerhealth = 100
 
-def mapdraw():
-    screen.blit(map, (0,0))
 
-pimg = playerimgf
+#dif is difficulty variable
+def pcattack(dif):
+    global playerhealth
+    playerhealth += -20 - (random.random() * 10 * dif) // 1
+    if playerhealth <= 0:
+        playerhealth = 0
+
+
+def pcheal(dif):
+    global pchealth
+    pchealth += 20 + (random.random() * 10 * dif) // 1
+    if pchealth >= 100:
+        pchealth = 100
+
+catchvar = -1
+
+arrowcoordinatex, arrowcoordinatey = 40, 520
+# coordinates of the arrow cursor to navigate between options)
+running = True
+
+while running:
+    screen.blit(opponentchoose, (0,0))
+    pygame.display.update()
+    for event2 in pygame.event.get():
+        if event2.type == pygame.KEYDOWN:
+            if event2.key == pygame.K_1:
+                oppname = 'Bulbasaur'
+                print(oppname)
+                dif = 1
+                running = False
+            elif event2.key == pygame.K_2:
+                oppname = 'Squirtle'
+                print(oppname)
+                dif = 1.1
+                running = False
+
+            elif event2.key == pygame.K_3:
+                oppname = 'Charmander'
+                print(oppname)
+                dif = 1.2
+                running = False
+
+            elif event2.key == pygame.K_4:
+                oppname = 'Pikachu'
+                print(oppname)
+                dif = 1.3
+                running = False
 
 running = True
-counter = 0
+while running:
+
+    screen.blit(pokemonchoose, (0,0))
+    fh = open('pokemoninfo.bin','rb')
+    pokemonlist = pickle.load(fh)
+    imgblitcounter = 0
+    for i in pokemonlist.values():
+        if i == 'Pikachu':
+            screen.blit(pikaimg, (0 + imgblitcounter,260))
+            imgblitcounter += 150
+        if i == 'Bulbasaur':
+            screen.blit(bulbimg, (0 + imgblitcounter,260))
+            imgblitcounter += 150
+        if i == 'Squirtle':
+            screen.blit(sqimg, (0 + imgblitcounter,260))
+            imgblitcounter += 150
+        if i == 'Charmander':
+            screen.blit(charimg, (0 + imgblitcounter,260))
+            imgblitcounter += 150
+
+    for event1 in pygame.event.get():
+        if event1.type == pygame.KEYDOWN:
+
+            if event1.key == pygame.K_1:
+                pokename = pokemonlist[1]
+                running = False
+
+            if event1.key == pygame.K_2:
+                pokename = pokemonlist[2]
+                running = False
+
+            if event1.key == pygame.K_3:
+                pokename = pokemonlist[3]
+                running = False
+
+            if event1.key == pygame.K_4:
+                pokename = pokemonlist[4]
+                running = False
+
+    pygame.display.update()
+
+
+running = True
 
 while running:
 
-    if loadingscreenvar == 0:
-        LoadingScreen.blitls(lscreen, screen, 'PRESS ANY KEY')
-        loadingscreenvar = 1
+    bannertextvar = True
 
-    if starterp == 0:
-        startchoosepokemon.blitcs(screen, startchoose, pokemonID, pokedict,playerinventory)
-        pokemonID = 1
-        starterp = 1
+    temppch, tempplh, playerdamagedealt, pcdamagedealt, playerheal, pchealed = 0, 0, 0, 0, 0, 0
 
-    print(playerinventory)
-    print(pokemonID)
+    # health variables used to calculate stuff like damage dealt or healed by player and opponent per round
 
-    if counter>0:
-        counter -= 1
-    #reducing counter. refer line 121
+    screen.blit(bsc, (0, 0))
 
-    t1 = (playerX, playerY)
+    if oppname == 'Pikachu':
+        oppimg = pikaimg
+    elif oppname == 'Squirtle':
+        oppimg = sqimg
+    elif oppname == 'Bulbasaur':
+        oppimg = bulbimg
+    elif oppname == 'Charmander':
+        oppimg = charimg
 
-    player_rect = pygame.Rect(playerX, playerY, playerimgf.get_width(), playerimgf.get_height())
-    grass_rect = pygame.Rect(352, 224, 448, 300)
+    if pokename == 'Pikachu':
+        pokeimg = pbimg
+    elif pokename == 'Charmander':
+        pokeimg = cbimg
+    elif pokename == 'Bulbasaur':
+        pokeimg = bbimg
+    elif pokename == 'Squirtle':
+        pokeimg = sbimg
 
-    for event in pygame.event.get():
+    screen.blit(oppimg, (450, 60))
+    screen.blit(pokeimg, (75, 275))
+    screen.blit(pbsc, (0, 450))
+    font = pygame.font.Font('Raleway-Medium.ttf', 30)
+    font2 = pygame.font.Font('PokemonGb-RAeo.ttf', 20)
+    text4 = font2.render(oppname, True, (0, 0, 0))
+    text5 = font2.render(pokename, True, (0, 0, 0))
+    screen.blit(hpbars, (0, 0))
+    screen.blit(greenbars, (165, 115))
+    screen.blit(greenbar2, (601, 411))
+    screen.blit(text4, (34, 77))
+    screen.blit(text5, (466, 372))
 
-        if event.type == pygame.QUIT:
-            fh = open('pokemoninfo.bin','wb')
-            pickle.dump(pokedict,fh)
-            fh.close()
-            os.system('battle.py')
-            running = False
+    ph1 = playerhealth
+    pch1 = pchealth
 
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_i:
-                Inventory.showinv(screen, invimg, playerinventory, pokedict, charsp, sqsp, bulbsp, pikasp)
-
-        if event.type == pygame.KEYDOWN and counter == 0:
-            if event.key == pygame.K_RIGHT:
-                if (playerY > -33 and playerY < 97 and playerX == 256) or (playerY > 383 and playerY < 513 and playerX == 288) or playerX == 768:
-                    playerX += 0
-                else:
-                    playerX += 32
-                    keypressvar = "r"
-
-                    #keypressvar to choose which image to display. refer line 122
-
-                    pimg = playerimgr
-
-                #pimg is the image it will display when the character is not moving. so i default it to the idle image at the end of the section for the particular key i have pressed
-
-
-            elif event.key == pygame.K_LEFT:
-                if (playerY > -33 and playerY < 65 and playerX == 96) or (playerY > 95 and playerY < 225 and playerX ==160) or (playerY > 383 and playerY < 513 and playerX == 640) or (playerY > 383 and playerY < 545 and playerX == 160) or playerX == -32:
-                    playerX += 0
-                else:
-                    playerX -= 32
-                    keypressvar = "l"
-
-                    pimg = playerimgl
-
-            elif event.key == pygame.K_UP:
-                if (playerX > -1 and playerX < 129 and playerY == 256) or (playerX > 287 and playerX < 769 and playerY == 128) or playerY == -32 or (playerX > 319 and playerX <609 and playerY == 544 ):
-                    playerY += 0
-                else:
-                    playerY -= 32
-                    keypressvar = "u"
-
-                    pimg = playerimgb
-
-
-            elif event.key == pygame.K_DOWN:
-                if (playerX > 319 and playerX < 609 and playerY == 352) or (playerX > -33 and playerX < 129 and playerY == 352) or playerY == 544 or (playerX > 63 and playerX < 129 and playerY == 64):
-                    playerY += 0
-                else:
-                    playerY += 32
-                    keypressvar = "d"
-
-                    pimg = playerimgf
-
-            grasscv = random.randint(1, 10)
-
-        #grass collision variable with a 10% chance of pokemon appearance being triggered
-
-
-        if event.type == pygame.KEYUP:
-            playerY+=0
-            playerX+=0
-
-    t2 = (playerX,playerY)
-
-    #t1 - initial pos, t2 - position after movement. so if these are diff counter will be set to 12, to skip 12 loops to prevent continuous movement of the character
-
-    if t1 != t2:
-        counter = 12
-
-    bannervar = 1
-    #Used later to decide which banner shows up (The pokemon escaped/You caught the pokemon)
-
-    if player_rect.colliderect(grass_rect) and grasscv == 1 and t1 != t2:
-        #triggering pokemon encounter if character is on grass and 10% chance
-
-        pokemon1 = random.randint(1, 4)
-
-        if pokemon1 == 1:
-            pname = "Pikachu"
-        elif pokemon1 == 2:
-            pname = "Charmander"
-        elif pokemon1 == 3:
-            pname = "Squirtle"
-        elif pokemon1 == 4:
-            pname = "Bulbasaur"
-
-        #a random number to decide which pokemon shows up
-
-        running1 = True
-        while running1:
-
-            if bannervar == 0:
-                screen.blit(batsc, (0, 0))
-                screen.blit(trback, (0, 180))
-                screen.blit(bsbanner1, (0, 450))
-                for event2 in pygame.event.get():
-                    if event2.type == pygame.KEYDOWN:
-                        running1 = False
-
-            elif bannervar == 2:
-                screen.blit(batsc,(0,0))
-                screen.blit(trback, (0,180))
-                screen.blit(bsbanner2, (0,450))
-                for event2 in pygame.event.get():
-                    if event2.type == pygame.KEYDOWN:
-                        running1 = False
-
-            elif bannervar == 1:
-                screen.blit(batsc, (0, 0))
-                screen.blit(trback,(0,180))
-                screen.blit(bsbanner, (0,450))
-                if pokemon1 == 1:
-                    screen.blit(pikaimg, (450, 60))
-                elif pokemon1 == 2:
-                    screen.blit(charimg, (450, 60))
-                elif pokemon1 == 3:
-                    screen.blit(sqimg, (450, 60))
-                elif pokemon1 == 4:
-                    screen.blit(bulbimg, (450, 60))
-
-
-            #Blitting the image of the pokemon based on what value pokemon1 variable has
-
-            for event1 in pygame.event.get():
-                if event1.type == pygame.KEYDOWN:
-                    if event1.key == pygame.K_r:
-                        bannervar = 0
-                    elif event1.key == pygame.K_c and len(playerinventory)<7:
-                        bannervar = 2
-
-
+    # below code is for showing stuff like pokemon fainted after HP of one pokemon reaches 0
+    if pchealth == 0:
+        while True:
+            screen.blit(bsc, (0, 0))
+            screen.blit(pokeimg, (75, 275))
+            screen.blit(pbsc, (0, 450))
+            screen.blit(hpbars, (0, 0))
+            screen.blit(greenbars, (165, 115))
+            screen.blit(greenbar2, (601, 411))
+            if catchvar == -1:
+                text8 = font2.render(F'The wild {oppname} fainted!', True, (0, 0, 0))
+            elif catchvar == 1:
+                text8 = font2.render(F'The wild {oppname} escaped!', True, (0,0,0))
+            elif catchvar == 0:
+                text8 = font2.render(F'You caught the wild {oppname}', True, (0,0,0))
+            screen.blit(text8, (40, 505))
             pygame.display.update()
 
-        if bannervar == 2:
-            pokemonID += 1
-            playerinventory.append(pokemonID)
-            pokedict[pokemonID] = pname
-            print(pokedict)
-            print(playerinventory)
+    elif playerhealth == 0:
+        while True:
+            screen.blit(bsc, (0, 0))
+            screen.blit(oppimg, (450, 60))
+            screen.blit(pbsc, (0, 450))
+            screen.blit(hpbars, (0, 0))
+            screen.blit(greenbars, (165, 115))
+            screen.blit(greenbar2, (601, 411))
+            text8 = font2.render(F'{pokename} fainted!', True, (0, 0, 0))
+            screen.blit(text8, (40, 505))
+            pygame.display.update()
 
-    else:
-        screen.fill((0,0,0))
+    # 2 variables for the initial values of health, used later for health bar
 
-        '''print("X = ", playerX)
-        print("Y = ", playerY)'''
+    if fightstate == 1:
+        text1 = font.render('FIGHT', True, (0, 0, 0))
+        text2 = font.render('HEAL', True, (0, 0, 0))
+        text3 = font.render('RUN', True, (0, 0, 0))
+        screen.blit(text1, (75, 510))
+        screen.blit(text2, (375, 510))
+        screen.blit(text3, (675, 510))
+        screen.blit(arrow, (arrowcoordinatex, arrowcoordinatey))
 
-        mapdraw()
+    for event1 in pygame.event.get():
 
-    #So i kept it such that every time the character moves, the counter goes to 12, and it does not take input for 12 loops (to prevent continuous movement
-    #So when the program is not taking input, it displays the image at the position according to the value of the counter. hope u understand
+        if event1.type == pygame.QUIT:
+            running = False
 
-    if counter <13 and counter>9:
-        if keypressvar == "r":
-            playerdisp(playerimgr1, playerX - 24, playerY)
-        elif keypressvar == "l":
-            playerdisp(playerimgl1, playerX + 24, playerY)
-        elif keypressvar == "u":
-            playerdisp(playerimgb1, playerX, playerY + 24)
-        elif keypressvar == "d":
-            playerdisp(playerimgf1, playerX, playerY - 24)
+        if event1.type == pygame.KEYDOWN:
+            if event1.key == pygame.K_RIGHT:
 
-    elif counter <10 and counter>6:
-        if keypressvar == "r":
-            playerdisp(playerimgr, playerX - 16, playerY)
-        elif keypressvar == "l":
-            playerdisp(playerimgl, playerX + 16, playerY)
-        elif keypressvar == "u":
-            playerdisp(playerimgb, playerX, playerY + 16)
-        elif keypressvar == "d":
-            playerdisp(playerimgf, playerX, playerY - 16)
+                # code for controlling the cursor
 
-    elif counter <7 and counter>3:
-        if keypressvar == "r":
-            playerdisp(playerimgr2, playerX - 8, playerY)
-        elif keypressvar == "l":
-            playerdisp(playerimgl2, playerX + 8, playerY)
-        elif keypressvar == "u":
-            playerdisp(playerimgb2, playerX, playerY + 8)
-        elif keypressvar == "d":
-            playerdisp(playerimgf2, playerX, playerY - 8)
+                if arrowcoordinatex != 640:
+                    screen.blit(arrow, (arrowcoordinatex + 300, arrowcoordinatey))
+                    arrowcoordinatex += 300
+                else:
+                    screen.blit(arrow, (40, arrowcoordinatey))
+                    arrowcoordinatex = 40
 
-    elif counter <4 and counter >0:
-        if keypressvar == "r":
-            playerdisp(playerimgr, playerX, playerY)
-        elif keypressvar == "l":
-            playerdisp(playerimgl, playerX, playerY)
-        elif keypressvar == "u":
-            playerdisp(playerimgb, playerX, playerY)
-        elif keypressvar == "d":
-            playerdisp(playerimgf, playerX, playerY)
+            if event1.key == pygame.K_a:
 
-    else:
-        playerdisp(pimg,playerX,playerY)
+                if arrowcoordinatex == 40:
 
-                #Inventory.showinv(screen, invimg, playerinventory, pokedict, charsp, sqsp, bulbsp, pikasp)
+                    # the following will execute if the cursor is in the first position, ie the x coordinate is 40
 
-#the above is for when the counter is 0
+                    pattack()
+
+                    playerdamagedealt = str(pch1 - pchealth)
+                    temppch = pchealth
+
+                    pcmovedetermine = random.random()
+
+                    # pcmovedetermine is a random.random function to determine whether the pc will heal or attack
+
+                    if pcmovedetermine > 0.5:
+
+                        pcattack(dif)
+
+                        pcdamagedealt = str(ph1 - playerhealth)
+
+                        # pcdamagedealt, pcdamagehealed, playerdamagedealt, playerdamagehealed, temppch, tempplh are all variables for calculating how much damage has been dealt or healed per round
+
+                    else:
+                        pcheal(dif)
+
+                        pchealed = str(pchealth - temppch)
+
+                if arrowcoordinatex == 340:
+                    pheal()
+
+                    tempplh = playerhealth
+
+                    playerheal = str(playerhealth - ph1)
+
+                    pcmovedetermine = random.random()
+
+                    if pcmovedetermine > 0.5:
+                        pcattack(dif)
+
+                        pcdamagedealt = str(tempplh - playerhealth)
+
+
+                    else:
+                        pcheal(dif)
+
+                        pchealed = str(pchealth - pch1)
+
+                if arrowcoordinatex == 640:
+                    catchvar = 1
+                    pchealth = 0
+
+            print('player', playerhealth)
+            print('opponent', pchealth)
+
+            if event1.key == pygame.K_c:
+
+                pchealth_roundedoff = round(pchealth/10)
+                percentagecatch = 10-pchealth_roundedoff
+                pokecatchsuccess = random.randint(1,11)
+                if pokecatchsuccess <= percentagecatch:
+                    print('Caught successfully')
+                    catchvar = 0
+                    pchealth = 0
+                else:
+                    print('Catch unsuccessful')
+                    catchvar = 1
+                    pchealth = 0
+
+
+
+
+    # the below line is to only show damage dealt or healed per round if a move has taken place. ie it will not display shit like 0 health healed and 0 damage dealth
+
+    if temppch != 0 or tempplh != 0:
+        screen.blit(pbsc, (0, 450))
+
+        if tempplh == 0:
+            text6 = 'You dealt {} HP worth of damage.'.format(playerdamagedealt)
+
+            if pcmovedetermine > 0.5:
+                text7 = 'The opponent dealt {} HP worth of damage to you.'.format(pcdamagedealt)
+            else:
+                text7 = 'The opponent healed {} HP.'.format(pchealed)
+
+        else:
+            text6 = 'You healed {} HP'.format(playerheal)
+
+            if pcmovedetermine > 0.5:
+                text7 = 'The opponent dealt {} HP worth of damage to you.'.format(pcdamagedealt)
+            else:
+                text7 = 'The opponent healed {} HP.'.format(pchealed)
+
+        blittext6 = font2.render(text6, True, (0, 0, 0))
+        blittext7 = font2.render(text7, True, (0, 0, 0))
+
+        while True:
+            screen.blit(blittext6, (40, 478))
+            screen.blit(blittext7, (40, 544))
+
+            pygame.display.update()
+            for event2 in pygame.event.get():
+                if event2.type == pygame.KEYDOWN:
+                    bannertextvar = False
+                    break
+
+            if not bannertextvar:
+                break
+
+    # below lines of code is to blit the HP and healthbars
+
+    playerhpprint = font2.render('{}/100'.format(str(playerhealth)), True, (0, 0, 0))
+    pchpprint = font2.render('{}/100'.format(str(pchealth)), True, (0, 0, 0))
+    screen.blit(playerhpprint, (610, 440))
+    screen.blit(pchpprint, (220, 77))
+    greenbars = pygame.transform.scale(greenbars, ((pchealth / 100) * 168, 16))
+    greenbar2 = pygame.transform.scale(greenbar2, ((playerhealth / 100) * 168, 16))
+
+    # above code is for controlling the cursor arrow'''
 
     pygame.display.update()
