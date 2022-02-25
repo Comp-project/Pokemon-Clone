@@ -3,6 +3,8 @@ import random
 import Inventory
 import LoadingScreen
 import startchoosepokemon
+import pickle
+import os
 
 pygame.init()
 
@@ -12,8 +14,8 @@ pokemonID = 0
 
 #variable for storing the IDs of the captured pokemon
 
-pygame.mixer.music.load("Littleroot Town - Pokémon Omega Ruby & Alpha Sapphire Music Extended HD.wav")
-pygame.mixer.music.play(-1)
+'''pygame.mixer.music.load("Littleroot Town - Pokémon Omega Ruby & Alpha Sapphire Music Extended HD.wav")
+pygame.mixer.music.play(-1)'''
 
 playerimgf = pygame.image.load('Images/walk front idle.png')
 playerimgf1 = pygame.image.load('Images/walk front 1.png')
@@ -38,7 +40,9 @@ charimg = pygame.image.load('Images/Charimg.png')
 sqimg = pygame.image.load('Images/sqimg.png')
 sqsp = pygame.image.load('Images/sqsp.png')
 trback = pygame.image.load('Images/trback.png')
+
 #image of character in battle screen
+
 bsbanner = pygame.image.load('Images/BattleScreenBanner.png')
 bsbanner1 = pygame.image.load('Images/BattleScreenBanner1.png')
 bsbanner2 = pygame.image.load('Images/BattleScreenBanner2.png')
@@ -48,8 +52,20 @@ map = pygame.image.load('Images/map.png')
 whitescreen = pygame.image.load('Images/whitescreen.png')
 invimg = pygame.image.load('Images/Inventory.png')
 lscreen = pygame.image.load('Images/LoadingScreen.png')
-
 startchoose = pygame.image.load("Images/startchoose.png")
+
+bbimg = pygame.image.load('Images/bulback.png')
+sbimg = pygame.image.load('Images/sqback.png')
+cbimg = pygame.image.load('Images/charback.png')
+pbimg = pygame.image.load('Images/pikaback.png')
+
+hpbars = pygame.image.load('Images/healthbars.png')
+greenbars = pygame.image.load('Images/greenbar.png')
+arrow = pygame.image.load('Images/arrowcursor.png')
+# all the images added above
+
+greenbar2 = pygame.image.load('Images/greenbar.png')
+# duplicating health bar - one for player's health, the other for opponent
 
 #all the images
 
@@ -102,6 +118,10 @@ while running:
     for event in pygame.event.get():
 
         if event.type == pygame.QUIT:
+            fh = open('pokemoninfo.bin','wb')
+            pickle.dump(pokedict,fh)
+            fh.close()
+            os.system('battle.py')
             running = False
 
         if event.type == pygame.KEYDOWN:
